@@ -5,8 +5,8 @@ Tap.test('.createPortAllocation()', suite => {
 	suite.test('returns a port allocation with an available TCP port and HTTP port', test => {
 		const portAllocation = (new PortAllocator()).createPortAllocation();
 
-		test.ok(typeof portAllocation.getHttpPort() === 'number');
-		test.ok(typeof portAllocation.getTcpPort() === 'number');
+		test.ok(typeof portAllocation.httpPort === 'number');
+		test.ok(typeof portAllocation.tcpPort === 'number');
 		test.end();
 	});
 
@@ -17,10 +17,10 @@ Tap.test('.createPortAllocation()', suite => {
 		const uniquePorts = [];
 
 		const allPorts = [
-			portAllocationOne.getHttpPort(),
-			portAllocationOne.getTcpPort(),
-			portAllocationTwo.getHttpPort(),
-			portAllocationTwo.getTcpPort()
+			portAllocationOne.httpPort,
+			portAllocationOne.tcpPort,
+			portAllocationTwo.httpPort,
+			portAllocationTwo.tcpPort
 		];
 
 		allPorts.forEach(port => {
