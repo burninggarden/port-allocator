@@ -5,6 +5,7 @@ import Config         from '@burninggarden/config';
 import {Directory}    from '@burninggarden/filesystem';
 import {TimeInterval} from '@burninggarden/enums';
 import ChildProcess   from 'child_process';
+import PortAllocation from 'interfaces/port-allocation';
 
 // Technically we can bind to ports lower than this without being root,
 // // but there's a lot of noise to compete with between 1024 and 2000.
@@ -13,10 +14,7 @@ const MIN_PORT = 2000;
 // The max available port number on linux (2^16 - 1):
 const MAX_PORT = 65535;
 
-interface PortAllocation {
-	httpPort : number;
-	tcpPort  : number;
-}
+
 
 class PortAllocator {
 
@@ -220,6 +218,9 @@ class PortAllocator {
 	private isRestrictedPort(port: number): boolean {
 		switch (port) {
 			case Config.getManagerPort():
+				return true;
+
+			case Config.getHttpsPort():
 				return true;
 
 			default:

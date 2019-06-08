@@ -8,7 +8,7 @@
 	"repository": "https://github.com/burninggarden/port-allocator",
 	"main": "./dist/src/index.js",
 	"dependencies": {
-		"@burninggarden/config": "0.0.7",
+		"@burninggarden/config": "0.0.8",
 		"@burninggarden/enums": "0.0.5",
 		"@burninggarden/filesystem": "0.0.5",
 		"@burninggarden/mutex": "0.0.4",

@@ -1,4 +1,6 @@
+import FS            from 'fs';
 import Tap           from 'tap';
+import Config        from '@burninggarden/config';
 import PortAllocator from 'port-allocator';
 
 Tap.test('.createPortAllocation()', suite => {
@@ -30,6 +32,74 @@ Tap.test('.createPortAllocation()', suite => {
 		});
 
 		test.deepEqual(uniquePorts, allPorts);
+		test.end();
+	});
+
+	suite.test('bypasses designated manager port', test => {
+		const managerPort = Config.getManagerPort();
+		const filepath = '/tmp/bg-locks/port';
+
+		// Explicitly overwrite the port lockfile so that we start
+		// iterating through available ports pretty close to the port
+		// we're trying to examine:
+		FS.writeFileSync(filepath, managerPort - 100, 'utf8');
+
+		const portAllocator = new PortAllocator();
+
+		let allocation = portAllocator.createPortAllocation();
+
+		while (true) {
+			if (allocation.httpPort === managerPort) {
+				test.notOk('Assigned manager port for http port');
+				break;
+			}
+
+			if (allocation.tcpPort === managerPort) {
+				test.notOk('Assigned manager port for tcp port');
+				break;
+			}
+
+			if (allocation.httpPort > managerPort) {
+				break;
+			}
+
+			allocation = portAllocator.createPortAllocation();
+		}
+
+		test.end();
+	});
+
+	suite.test('bypasses designated https port', test => {
+		const httpsPort = Config.getHttpsPort();
+		const filepath = '/tmp/bg-locks/port';
+
+		// Explicitly overwrite the port lockfile so that we start
+		// iterating through available ports pretty close to the port
+		// we're trying to examine:
+		FS.writeFileSync(filepath, httpsPort - 100, 'utf8');
+
+		const portAllocator = new PortAllocator();
+
+		let allocation = portAllocator.createPortAllocation();
+
+		while (true) {
+			if (allocation.httpPort === httpsPort) {
+				test.notOk('Assigned https port for http port');
+				break;
+			}
+
+			if (allocation.tcpPort === httpsPort) {
+				test.notOk('Assigned https port for tcp port');
+				break;
+			}
+
+			if (allocation.httpPort > httpsPort) {
+				break;
+			}
+
+			allocation = portAllocator.createPortAllocation();
+		}
+
 		test.end();
 	});
 
